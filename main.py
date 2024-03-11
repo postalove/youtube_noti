@@ -76,6 +76,7 @@ class YoutubeNoti(interactions.Extension):
                     async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
 
                         await afp.write(json.dumps(data))
+                    return
                 except:
                     return
                 
