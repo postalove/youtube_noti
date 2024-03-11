@@ -28,14 +28,15 @@ def get_youtube_channel_name(url):
     except Exception as e:
         print(f"An error occurred: ")
         return e
+
+
 def is_youtube_url(url):
     pattern = r'^https://www\.youtube\.com/@\w+$'
     if re.match(pattern, url):
         return True
     else:
         return False
-url = 'https://www.youtube.com/@Faide'
-print(is_youtube_url(url))
+
 '''
 url = 'https://www.youtube.com/@Faide'
 name = get_youtube_channel_name(url)
