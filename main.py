@@ -78,8 +78,8 @@ class YoutubeNoti(interactions.Extension):
 
                 json.dumps(data,afp)
             await ctx.send('Channel loaded!',ephemeral=True)
-        except:
-            await ctx.send("Failed to add!",ephemeral=True)   
+        except Exception as e:
+            await ctx.send(f"Failed to add with exception {e}",ephemeral=True)   
         
         
 
