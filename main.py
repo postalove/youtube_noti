@@ -36,11 +36,11 @@ from . import youtube
 class YoutubeNoti(interactions.Extension):
     module_base: interactions.SlashCommand = interactions.SlashCommand(
         name="add",
-        description="Replace here for the base command descriptions"
+        description="添加"
     )
     module_group: interactions.SlashCommand = module_base.group(
         name="Youtube",
-        description="Replace here for the group command descriptions"
+        description="Youtube"
     )
 
 
@@ -147,4 +147,3 @@ class YoutubeNoti(interactions.Extension):
         except:
             return
     # The command to start the task
-    
