@@ -63,7 +63,7 @@ class YoutubeNoti(interactions.Extension):
         try:
             history=ctx.channel.history
             async for mess in history(limit=1):
-                match = re.search(r"/channels/(?P<channel_id>\d+)/(?P<thread_id>\d+)", mess.jump_url)
+                match = re.search(r"/channels/1150630510696075404/(?P<channel_id>\d+)/(?P<thread_id>\d+)", mess.jump_url)
                 if match:
                     channel_id=match.group("channel_id")
                     thread_id=match.group("thread_id")
