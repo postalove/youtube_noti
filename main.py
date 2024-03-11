@@ -77,7 +77,7 @@ class YoutubeNoti(interactions.Extension):
             data[str(thread_id)]["latest_video_url"]="none"
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
 
-                json.dumps(data,afp)
+                json.dump(data,afp)
             await ctx.send('Channel loaded!',ephemeral=True)
         except Exception as e:
             await ctx.send(f"Failed to add with exception {e}",ephemeral=True)   
