@@ -39,7 +39,7 @@ class YoutubeNoti(interactions.Extension):
         description="添加"
     )
     module_group: interactions.SlashCommand = module_base.group(
-        name="Youtube",
+        name="youtube",
         description="Youtube"
     )
 
