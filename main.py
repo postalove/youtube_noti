@@ -140,7 +140,7 @@ class YoutubeNoti(interactions.Extension):
         except:
             return
     # The command to start the task
-    @module_group.subcommand('test',sub_cmd_description='test')
+'''    @module_group.subcommand('test',sub_cmd_description='test')
     async def test(self,ctx:interactions.SlashContext):
         thread_id=ctx.channel_id
-        await ctx.guild.get_thread(thread_id).send("test")
+        await ctx.guild.get_thread(thread_id).send("test")'''
