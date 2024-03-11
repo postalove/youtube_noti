@@ -134,7 +134,7 @@ class YoutubeNoti(interactions.Extension):
                     #sending the msg in discord channel
                     #you can mention any role like this if you want
                     channel_name=data[thread_id]['youtube_channel_name']
-                    msg = f"{channel_name} Just Uploaded A Video : {latest_video_url}"
+                    msg = f"{channel_name} 上传了 : {latest_video_url}"
                     #if you'll send the url discord will automaitacly create embed for it
                     #if you don't want to send embed for it then do <{latest_video_url}>
 
