@@ -72,7 +72,7 @@ class YoutubeNoti(interactions.Extension):
                         return 
 
                 else:
-                    await ctx.send('Unvalid channel!',ephemeral=True)
+                    await ctx.send('Unvalid url!',ephemeral=True)
                     return 
                 
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
