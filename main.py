@@ -147,7 +147,7 @@ class YoutubeNoti(interactions.Extension):
                     #getting the channel to send the message
                     
                     thread = self.bot.get_guild(1150630510696075404).get_thread(int(thread_id))
-
+                    general_thread=self.bot.get_guild(1150630510696075404).get_thread(1216435833167548517)
                     #sending the msg in discord channel
                     #you can mention any role like this if you want
                     channel_name=data[thread_id]['youtube_channel_name']
@@ -156,6 +156,7 @@ class YoutubeNoti(interactions.Extension):
                     #if you don't want to send embed for it then do <{latest_video_url}>
                     try:
                         await thread.send(msg)
+                        await general_thread.send(msg)
                     except:
                         del data[thread_id]
                         async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
