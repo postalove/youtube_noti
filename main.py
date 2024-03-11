@@ -50,11 +50,11 @@ class YoutubeNoti(interactions.Extension):
     
     @interactions.slash_option(
         name = "youtube_channel_url",
-        description = "youtubep频道链接",
-        required = True,
+        description = "youtube频道链接或留空去除当前子区的推送",
+        required = False,
         opt_type = interactions.OptionType.STRING
     )
-    async def noti(self, ctx: interactions.SlashContext, youtube_channel_url: str):
+    async def noti(self, ctx: interactions.SlashContext, youtube_channel_url: str='.'):
         # The local file path is inside the directory of the module's main script file
         if '技术公务员' not in [role.name for role in ctx.author.roles]:
             await ctx.send('Missing Permission',ephemeral=True)
@@ -65,6 +65,21 @@ class YoutubeNoti(interactions.Extension):
             if re.match(pattern, youtube_channel_url):
                 thread_id=ctx.channel_id
 
+            elif youtube_channel_url=='.':
+                async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
+                    data = await afp.read()
+                    data = json.loads(data)
+                try:    
+                    
+                    del data[str(thread_id)]
+                    await ctx.send('Notification is this thread has been deleted!',ephemeral=True)
+                    async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
+
+                        await afp.write(json.dumps(data))
+                except:
+                    return
+                
+            
             else:
                 await ctx.send('Unvalid url!',ephemeral=True)
                 return 
