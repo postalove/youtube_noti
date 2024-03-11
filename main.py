@@ -19,72 +19,134 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import interactions
 # Use the following method to import the internal module in the current same directory
-from . import internal_t
+import json
+import requests
+import re
 # Import the os module to get the parent path to the local files
 import os
 # aiofiles module is recommended for file operation
 import aiofiles
+import asyncio
 # You can listen to the interactions.py event
 from interactions.api.events import MessageCreate
 # You can create a background task
 from interactions import Task, IntervalTrigger
+from . import youtube
 
-'''
-Replace the ModuleName with any name you'd like
-'''
-class ModuleName(interactions.Extension):
+class YoutubeNoti(interactions.Extension):
     module_base: interactions.SlashCommand = interactions.SlashCommand(
-        name="replace_your_command_base_here",
+        name="add",
         description="Replace here for the base command descriptions"
     )
     module_group: interactions.SlashCommand = module_base.group(
-        name="replace_your_command_group_here",
+        name="Youtube",
         description="Replace here for the group command descriptions"
     )
 
-    @module_group.subcommand("ping", sub_cmd_description="Replace the description of this command")
-    @interactions.slash_option(
-        name = "option_name",
-        description = "Option description",
-        required = True,
-        opt_type = interactions.OptionType.STRING
-    )
-    async def module_group_ping(self, ctx: interactions.SlashContext, option_name: str):
-        await ctx.send(f"Pong {option_name}!")
-        internal_t.internal_t_testfunc()
 
-    @module_base.subcommand("pong", sub_cmd_description="Replace the description of this command")
+        
+
+    @module_base.subcommand("notification", sub_cmd_description="添加Youtube更新提醒")
     @interactions.slash_option(
-        name = "option_name",
-        description = "Option description",
+        name = "youtube_channel_url",
+        description = "youtubep频道链接",
         required = True,
         opt_type = interactions.OptionType.STRING
     )
-    async def module_group_pong(self, ctx: interactions.SlashContext, option_name: str):
+    async def notification(self, ctx: interactions.SlashContext, youtube_channel_url: str):
         # The local file path is inside the directory of the module's main script file
-        async with aiofiles.open(f"{os.path.dirname(__file__)}/example_file.txt") as afp:
-            file_content: str = await afp.read()
-        await ctx.send(f"Pong {option_name}!\nFile content: {file_content}")
-        internal_t.internal_t_testfunc()
+        
+        
+        try:
+            history=ctx.channel.history
+            async for mess in history(limit=1):
+                match = re.search(r"/channels/(?P<channel_id>\d+)/(?P<thread_id>\d+)", mess.jump_url)
+                if match:
+                    channel_id=match.group("channel_id")
+                    thread_id=match.group("thread_id")
+                    if channel_id != 1216434305455358033:
+                        await ctx.send('Unvalid channel!',ephemeral=True)
+                        return 
+
+                else:
+                    await ctx.send('Unvalid channel!',ephemeral=True)
+                    return 
+                
+            async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
+                data = await json.loads(afp)
+            data[str(thread_id)]={}
+            data[str(thread_id)]["youtube_channel_name"]=youtube.get_youtube_channel_name(youtube_channel_url)
+            data[str(thread_id)]["youtube_channel"]=youtube_channel_url
+            data[str(thread_id)]["latest_video_url"]="none"
+            async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
+
+                json.dumps(data,afp)
+            await ctx.send('Channel loaded!',ephemeral=True)
+        except:
+            await ctx.send("Failed to add!",ephemeral=True)   
+        
+        
 
     @interactions.listen(MessageCreate)
     async def on_messagecreate(self, event: MessageCreate):
-        '''
-        Event listener when a new message is created
-        '''
-        print(f"User {event.message.author.display_name} sent '{event.message.content}'")
+        if not self.check_youtube.running:
+            self.check_youtube.start()
+            
 
-    # You can even create a background task to run as you wish.
-    # Refer to https://interactions-py.github.io/interactions.py/Guides/40%20Tasks/ for guides
-    # Refer to https://interactions-py.github.io/interactions.py/API%20Reference/API%20Reference/models/Internal/tasks/ for detailed APIs
-    @Task.create(IntervalTrigger(minutes=1))
-    async def task_everyminute(self):
-        channel: interactions.TYPE_MESSAGEABLE_CHANNEL = self.bot.get_guild(1234567890).get_channel(1234567890)
-        await channel.send("Background task send every one minute")
-        print("Background Task send every one minute")
+    @Task.create(IntervalTrigger(minutes=5))
+    async def check_youtube(self):
+        try:
+            async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as f:
+                data=json.load(f)
+                
+                #printing here to show
+            print("Now Checking!")
 
+                #checking for all the channels in youtubedata.json file
+            for thread_id in data:
+                print(f"Now Checking For {data[thread_id]['youtube_channel']}")
+                    #getting youtube channel's url
+                channel = f"{data[thread_id]['youtube_channel']}"
+
+                    #getting html of the /videos page
+                html = requests.get(channel+"/videos").text
+
+                    #getting the latest video's url
+                    #put this line in try and except block cause it can give error some time if no video is uploaded on the channel
+                try:
+                    latest_video_url = "https://www.youtube.com/watch?v=" + re.search('(?<="videoId":").*?(?=")', html).group()
+                except:
+                    continue
+
+                    #checking if url in youtubedata.json file is not equals to latest_video_url
+                if not str(data[thread_id]["latest_video_url"]) == latest_video_url:
+
+                    #changing the latest_video_url
+                    data[str(thread_id)]['latest_video_url'] = latest_video_url
+
+                    #dumping the data
+                    async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
+                        json.dumps(data, afp)
+
+                    #getting the channel to send the message
+                    
+                    thread = self.bot.get_guild(1150630510696075404).get_channel(1216434305455358033).get_thread(int(thread_id))
+
+                    #sending the msg in discord channel
+                    #you can mention any role like this if you want
+                    channel_name=data[thread_id]['youtube_channel_name']
+                    msg = f"{channel_name} Just Uploaded A Video : {latest_video_url}"
+                    #if you'll send the url discord will automaitacly create embed for it
+                    #if you don't want to send embed for it then do <{latest_video_url}>
+
+                    await thread.send(msg)
+                await asyncio.sleep(10)
+        except:
+            return
     # The command to start the task
     @module_base.subcommand("start_task", sub_cmd_description="Start the background task")
     async def module_base_starttask(self, ctx: interactions.SlashContext):
-        self.task_everyminute.start()
+        if self.check_youtube.running:
+            ctx.send("Already Started checking!",ephemeral=True)
+        self.check_youtube.start()
         await ctx.send("Task started")
