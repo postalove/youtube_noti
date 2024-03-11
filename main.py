@@ -70,7 +70,7 @@ class YoutubeNoti(interactions.Extension):
                 return 
                 
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
-                data = await json.loads(afp)
+                data = await json.load(afp)
             data[str(thread_id)]={}
             data[str(thread_id)]["youtube_channel_name"]=youtube.get_youtube_channel_name(youtube_channel_url)
             data[str(thread_id)]["youtube_channel"]=youtube_channel_url
