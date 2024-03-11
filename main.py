@@ -64,6 +64,17 @@ class YoutubeNoti(interactions.Extension):
             pattern = r'^https://www\.youtube\.com/@\w+$'
             if re.match(pattern, youtube_channel_url):
                 thread_id=ctx.channel_id
+                async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
+                    data = await afp.read()
+                    data = json.loads(data)
+                data[str(thread_id)]={}
+                data[str(thread_id)]["youtube_channel_name"]=youtube.get_youtube_channel_name(youtube_channel_url)
+                data[str(thread_id)]["youtube_channel"]=youtube_channel_url
+                data[str(thread_id)]["latest_video_url"]="none"
+                async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
+
+                    await afp.write(json.dumps(data))
+                await ctx.send('Channel loaded!',ephemeral=True)                
 
             elif youtube_channel_url=='.':
                 async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
@@ -85,17 +96,7 @@ class YoutubeNoti(interactions.Extension):
                 await ctx.send('Unvalid url!',ephemeral=True)
                 return 
                 
-            async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
-                data = await afp.read()
-                data = json.loads(data)
-            data[str(thread_id)]={}
-            data[str(thread_id)]["youtube_channel_name"]=youtube.get_youtube_channel_name(youtube_channel_url)
-            data[str(thread_id)]["youtube_channel"]=youtube_channel_url
-            data[str(thread_id)]["latest_video_url"]="none"
-            async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
 
-                await afp.write(json.dumps(data))
-            await ctx.send('Channel loaded!',ephemeral=True)
         except Exception as e:
             await ctx.send(f"Failed to add with exception {e}",ephemeral=True)   
         
