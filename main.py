@@ -89,6 +89,7 @@ class YoutubeNoti(interactions.Extension):
                         await afp.write(json.dumps(data))
                     return
                 except:
+                    await ctx.send("No Youtube notification in this thread!")
                     return
                 
             
