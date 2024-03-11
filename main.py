@@ -54,7 +54,7 @@ class YoutubeNoti(interactions.Extension):
         required = True,
         opt_type = interactions.OptionType.STRING
     )
-    async def notification(self, ctx: interactions.SlashContext, youtube_channel_url: str):
+    async def noti(self, ctx: interactions.SlashContext, youtube_channel_url: str):
         # The local file path is inside the directory of the module's main script file
         if '技术公务员' not in [role.name for role in ctx.author.roles]:
             await ctx.send('Missing Permission',ephemeral=True)
