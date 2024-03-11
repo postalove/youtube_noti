@@ -28,6 +28,14 @@ def get_youtube_channel_name(url):
     except Exception as e:
         print(f"An error occurred: ")
         return e
+def is_youtube_url(url):
+    pattern = r'^https://www\.youtube\.com/@\w+$'
+    if re.match(pattern, url):
+        return True
+    else:
+        return False
+url = 'https://www.youtube.com/@Faide'
+print(is_youtube_url(url))
 '''
 url = 'https://www.youtube.com/@Faide'
 name = get_youtube_channel_name(url)
@@ -36,7 +44,7 @@ if name:
     print(f'YouTube channel name: {name}')
 else:
     print('Could not extract YouTube channel name.')'''
-channel = 'https://www.youtube.com/@Faide'
+'''channel = 'https://www.youtube.com/@Faide'
 
                     #getting html of the /videos page
 html = requests.get(channel+"/videos").text
@@ -46,5 +54,5 @@ try:
     latest_video_url = "https://www.youtube.com/watch?v=" + re.search('(?<="videoId":").*?(?=")', html).group()
     print(f'{latest_video_url}')
 except Exception as e:
-    print(f'A error occured:{e}')
-    
+
+    print(f'A error occured:{e}')'''

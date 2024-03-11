@@ -61,19 +61,12 @@ class YoutubeNoti(interactions.Extension):
             return
         
         try:
-            history=ctx.channel.history
-            async for mess in history(limit=1):
-                match = re.search(r"/channels/1150630510696075404/(?P<channel_id>\d+)/(?P<thread_id>\d+)", mess.jump_url)
-                if match:
-                    channel_id=match.group("channel_id")
-                    thread_id=match.group("thread_id")
-                    if channel_id != 1216434305455358033:
-                        await ctx.send('Unvalid channel!',ephemeral=True)
-                        return 
+            if youtube.is_youtube_url(youtube_channel_url):
+                thread_id=ctx.channel_id
 
-                else:
-                    await ctx.send('Unvalid url!',ephemeral=True)
-                    return 
+            else:
+                await ctx.send('Unvalid url!',ephemeral=True)
+                return 
                 
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
                 data = await json.loads(afp)
@@ -133,7 +126,7 @@ class YoutubeNoti(interactions.Extension):
 
                     #getting the channel to send the message
                     
-                    thread = self.bot.get_guild(1150630510696075404).get_channel(1216434305455358033).get_thread(int(thread_id))
+                    thread = self.bot.get_guild(1150630510696075404).get_thread(int(thread_id))
 
                     #sending the msg in discord channel
                     #you can mention any role like this if you want
@@ -147,3 +140,6 @@ class YoutubeNoti(interactions.Extension):
         except:
             return
     # The command to start the task
+    @module_group.subcommand('test',sub_cmd_description='test')
+    async def test(self,ctx:interactions.SlashContext):
+        await ctx.guild.get_thread(1216434752941199480).send("test")
