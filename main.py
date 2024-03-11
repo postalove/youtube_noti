@@ -70,7 +70,8 @@ class YoutubeNoti(interactions.Extension):
                 return 
                 
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
-                data = await json.load(afp)
+                data = await afp.read()
+                data = json.loads(data)
             data[str(thread_id)]={}
             data[str(thread_id)]["youtube_channel_name"]=youtube.get_youtube_channel_name(youtube_channel_url)
             data[str(thread_id)]["youtube_channel"]=youtube_channel_url
@@ -94,7 +95,8 @@ class YoutubeNoti(interactions.Extension):
     async def check_youtube(self):
         try:
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as f:
-                data=await json.load(f)
+                data=await f.read()
+                data=json.loads(data)
                 
                 #printing here to show
             print("Now Checking!")
