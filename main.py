@@ -136,7 +136,7 @@ class YoutubeNoti(interactions.Extension):
                 if not str(data[thread_id]["latest_video_url"]) == latest_video_url:
 
                     #changing the latest_video_url
-                    data[str(thread_id)]['latest_video_url'] = latest_video_url
+                    data[thread_id]['latest_video_url'] = latest_video_url
 
                     #dumping the data
                     async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
@@ -152,8 +152,12 @@ class YoutubeNoti(interactions.Extension):
                     msg = f"{channel_name} 上传了 : {latest_video_url}"
                     #if you'll send the url discord will automaitacly create embed for it
                     #if you don't want to send embed for it then do <{latest_video_url}>
-
-                    await thread.send(msg)
+                    try:
+                        await thread.send(msg)
+                    except:
+                        del data[thread_id]
+                        async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
+                            await afp.write(json.dumps(data))
                 await asyncio.sleep(10)
         except:
             return
