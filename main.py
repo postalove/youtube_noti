@@ -59,11 +59,11 @@ class YoutubeNoti(interactions.Extension):
         if '技术公务员' not in [role.name for role in ctx.author.roles]:
             await ctx.send('Missing Permission',ephemeral=True)
             return
-        
+        thread_id=ctx.channel_id
         try:
             pattern = r'^https://www\.youtube\.com/@\w+$'
             if re.match(pattern, youtube_channel_url):
-                thread_id=ctx.channel_id
+                
                 async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
                     data = await afp.read()
                     data = json.loads(data)
