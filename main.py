@@ -46,7 +46,7 @@ class YoutubeNoti(interactions.Extension):
 
         
 
-    @module_base.subcommand("notification", sub_cmd_description="添加Youtube更新提醒")
+    @module_group.subcommand("notification", sub_cmd_description="添加Youtube更新提醒")
     
     @interactions.slash_option(
         name = "youtube_channel_url",
@@ -147,9 +147,4 @@ class YoutubeNoti(interactions.Extension):
         except:
             return
     # The command to start the task
-    @module_base.subcommand("start_task", sub_cmd_description="Start the background task")
-    async def module_base_starttask(self, ctx: interactions.SlashContext):
-        if self.check_youtube.running:
-            ctx.send("Already Started checking!",ephemeral=True)
-        self.check_youtube.start()
-        await ctx.send("Task started")
+    
