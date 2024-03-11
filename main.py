@@ -47,6 +47,7 @@ class YoutubeNoti(interactions.Extension):
         
 
     @module_base.subcommand("notification", sub_cmd_description="添加Youtube更新提醒")
+    
     @interactions.slash_option(
         name = "youtube_channel_url",
         description = "youtubep频道链接",
@@ -55,7 +56,9 @@ class YoutubeNoti(interactions.Extension):
     )
     async def notification(self, ctx: interactions.SlashContext, youtube_channel_url: str):
         # The local file path is inside the directory of the module's main script file
-        
+        if '技术公务员' not in [role.name for role in ctx.author.roles]:
+            await ctx.send('Missing Permission',ephemeral=True)
+            return
         
         try:
             history=ctx.channel.history
