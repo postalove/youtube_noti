@@ -77,7 +77,7 @@ class YoutubeNoti(interactions.Extension):
             data[str(thread_id)]["latest_video_url"]="none"
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
 
-                json.dump(data,afp)
+                await afp.write(json.dumps(data))
             await ctx.send('Channel loaded!',ephemeral=True)
         except Exception as e:
             await ctx.send(f"Failed to add with exception {e}",ephemeral=True)   
@@ -94,7 +94,7 @@ class YoutubeNoti(interactions.Extension):
     async def check_youtube(self):
         try:
             async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as f:
-                data=json.load(f)
+                data=await json.load(f)
                 
                 #printing here to show
             print("Now Checking!")
@@ -123,7 +123,7 @@ class YoutubeNoti(interactions.Extension):
 
                     #dumping the data
                     async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='w') as afp:
-                        json.dumps(data, afp)
+                        await afp.write(json.dumps(data))
 
                     #getting the channel to send the message
                     
