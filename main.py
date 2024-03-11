@@ -61,7 +61,8 @@ class YoutubeNoti(interactions.Extension):
             return
         
         try:
-            if youtube.is_youtube_url(youtube_channel_url):
+            pattern = r'^https://www\.youtube\.com/@\w+$'
+            if re.match(pattern, youtube_channel_url):
                 thread_id=ctx.channel_id
 
             else:

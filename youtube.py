@@ -30,12 +30,12 @@ def get_youtube_channel_name(url):
         return e
 
 
-def is_youtube_url(url):
+'''def is_youtube_url(url):
     pattern = r'^https://www\.youtube\.com/@\w+$'
     if re.match(pattern, url):
         return True
     else:
-        return False
+        return False'''
 
 '''
 url = 'https://www.youtube.com/@Faide'
