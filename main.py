@@ -61,7 +61,7 @@ class YoutubeNoti(interactions.Extension):
             return
         thread_id=ctx.channel_id
         try:
-            pattern = r'^https://www\.youtube\.com/@\w+$'
+            pattern = r'^https://www\.youtube\.com/@[\w-]+$'
             if re.match(pattern, youtube_channel_url):
                 
                 async with aiofiles.open(f"{os.path.dirname(__file__)}/youtubedata.json",mode='r') as afp:
